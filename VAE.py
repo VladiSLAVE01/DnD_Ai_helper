@@ -108,10 +108,7 @@ class DnDVAE(nn.Module):
 
 			# Если есть условия — комбинируем с z
 			if conditions is not None:
-				# Простое решение: добавляем условия как дополнительный вход
-				# Для более сложного подхода нужно модифицировать архитектуру
 				z = torch.cat([z, conditions], dim=1)
-			# Это потребует изменения Decoder, пока оставим как есть
 
 			generated = self.decoder(z)
 		return generated
@@ -141,7 +138,7 @@ class DnDVAETrainer:
 
 		self.history = {'loss': [], 'recon_loss': [], 'kl_loss': []}
 
-		print(f"✅ VAE инициализирован на устройстве: {device}")
+		print(f" VAE инициализирован на устройстве: {device}")
 		print(f"   - Входная размерность: {input_dim}")
 		print(f"   - Латентное пространство: {latent_dim}")
 		print(f"   - Скрытых нейронов: {hidden_dim}")
@@ -217,9 +214,9 @@ class DnDVAETrainer:
 		dataset = TensorDataset(full_tensor)
 		dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
-		print(f"\n🚀 Начинаем обучение VAE на {len(full_tensor)} примерах")
+		print(f"\n Начинаем обучение VAE на {len(full_tensor)} примерах")
 		print(f"   Эпох: {epochs}, Батч-сайз: {batch_size}, β: {beta}")
-		print("-" * 50)
+
 
 		for epoch in range(1, epochs + 1):
 			loss, recon_loss, kl_loss = self.train_epoch(dataloader, beta)
@@ -231,8 +228,8 @@ class DnDVAETrainer:
 			if verbose and (epoch % 50 == 0 or epoch == 1):
 				print(f"Эпоха {epoch:4d}/{epochs} | Loss: {loss:.4f} | Recon: {recon_loss:.4f} | KL: {kl_loss:.4f}")
 
-		print("-" * 50)
-		print("✅ Обучение VAE завершено!")
+
+		print("Обучение VAE завершено")
 
 	def generate_hero(self, num_samples=1, scaler=None, target_columns=None,
 	                  condition_dim=None, device='cpu'):
@@ -255,7 +252,7 @@ class DnDVAETrainer:
 			generated = self.model.decoder(z)
 			generated = generated.cpu().numpy()
 
-		# ✅ Если есть condition_dim — отделяем условия от статов
+		#  Если есть condition_dim — отделяем условия от статов
 		if condition_dim is not None and condition_dim > 0:
 			# Отделяем условия (первые condition_dim колонок)
 			conditions = generated[:, :condition_dim]
@@ -264,11 +261,11 @@ class DnDVAETrainer:
 		else:
 			generated_stats = generated
 
-		# ✅ Денормализуем только статы
+		#  Денормализуем только статы
 		if scaler is not None:
 			generated_stats = scaler.inverse_transform(generated_stats)
 
-		# ✅ Собираем результат
+		#  Собираем результат
 		if target_columns is not None:
 			results = []
 			for i in range(num_samples):
@@ -319,7 +316,7 @@ class DnDVAETrainer:
 			'input_dim': self.input_dim,
 			'hidden_dim': self.hidden_dim,
 		}, path)
-		print(f"✅ Модель сохранена как {path}")
+		print(f"Модель сохранена как {path}")
 
 	def load(self, path='dnd_vae.pth'):
 		"""Загружает модель"""
@@ -330,7 +327,7 @@ class DnDVAETrainer:
 		self.latent_dim = checkpoint['latent_dim']
 		self.input_dim = checkpoint['input_dim']
 		self.hidden_dim = checkpoint['hidden_dim']
-		print(f"✅ Модель загружена из {path}")
+		print(f" Модель загружена из {path}")
 
 
 # =============================================
@@ -347,7 +344,7 @@ if __name__ == "__main__":
 	full_tensor = data['full_tensor']
 	input_dim = full_tensor.shape[1]  # (условия + признаки)
 
-	print(f"\n📊 Размерность входных данных: {input_dim}")
+	print(f"\n Размерность входных данных: {input_dim}")
 
 	# Создаем и обучаем VAE
 	vae = DnDVAETrainer(
@@ -361,19 +358,19 @@ if __name__ == "__main__":
 	vae.train(full_tensor, epochs=500, batch_size=8, beta=0.1)
 
 	# Генерация героев
-	print("\n🎲 Генерируем 3 новых героев...")
-	target_cols = ['Сил', 'Лов', 'Тел', 'Инт', 'Муд', 'Хар', 'КД', 'МаксХП']
-	heroes = vae.generate_hero(
-		num_samples=3,
-		scaler=data['scaler'],
-		target_columns=target_cols,
-		device=device
-	)
-
-	for i, hero in enumerate(heroes, 1):
-		print(f"\n📋 ГЕРОЙ #{i}")
-		for key, value in hero.items():
-			print(f"  {key}: {int(round(value))}")
+	# print("\nГенерируем 3 новых героев...")
+	# target_cols = ['Сил', 'Лов', 'Тел', 'Инт', 'Муд', 'Хар', 'КД', 'МаксХП']
+	# heroes = vae.generate_hero(
+	# 	num_samples=3,
+	# 	scaler=data['scaler'],
+	# 	target_columns=target_cols,
+	# 	device=device
+	# )
+	#
+	# for i, hero in enumerate(heroes, 1):
+	# 	print(f"\n ГЕРОЙ #{i}")
+	# 	for key, value in hero.items():
+	# 		print(f"  {key}: {int(round(value))}")
 
 	# График обучения
 	vae.plot_history()
