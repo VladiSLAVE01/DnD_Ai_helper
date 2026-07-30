@@ -357,20 +357,5 @@ if __name__ == "__main__":
 	# Обучение (500 эпох, небольшой батч)
 	vae.train(full_tensor, epochs=500, batch_size=8, beta=0.1)
 
-	# Генерация героев
-	# print("\nГенерируем 3 новых героев...")
-	# target_cols = ['Сил', 'Лов', 'Тел', 'Инт', 'Муд', 'Хар', 'КД', 'МаксХП']
-	# heroes = vae.generate_hero(
-	# 	num_samples=3,
-	# 	scaler=data['scaler'],
-	# 	target_columns=target_cols,
-	# 	device=device
-	# )
-	#
-	# for i, hero in enumerate(heroes, 1):
-	# 	print(f"\n ГЕРОЙ #{i}")
-	# 	for key, value in hero.items():
-	# 		print(f"  {key}: {int(round(value))}")
-
 	# График обучения
 	vae.plot_history()
