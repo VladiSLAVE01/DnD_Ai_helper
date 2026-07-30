@@ -58,13 +58,17 @@ DnD_Ai_helper/
 
 ```bash
 git clone https://github.com/your-username/DnD_Ai_helper.git
+
 cd DnD_Ai_helper
+
 2️⃣ Установка зависимостей
 bash
 pip install -r requirements.txt
+
 3️⃣ Запуск генерации
 bash
 python create_hero.py
+
 4️⃣ Пример работы
 ============================================================
 🧙 ГЕНЕРАТОР ПЕРСОНАЖЕЙ D&D
@@ -135,14 +139,12 @@ KL Loss	0.1561	0.3997	↑ 2.6x
 
 ## 🛠️ Технологии
 ``` bash
-<div align="center">
 Категория	Технологии
 Язык	Python 3.10+
 Глубокое обучение	PyTorch 2.12+
 Обработка данных	Pandas, NumPy, Scikit-learn
 Визуализация	Matplotlib
 Интерфейс	Интерактивный CLI (Streamlit — в планах)
-</div>
 ```
 
 ## 🔮 Планы по развитию
