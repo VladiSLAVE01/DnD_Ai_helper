@@ -1,0 +1,42 @@
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.whl
+
+# Виртуальное окружение
+.venv/
+venv/
+ENV/
+env/
+
+# Данные и модели (опционально)
+*.pth
+*.h5
+*.safetensors
+models/
+data/
+*.log
+
+# Jupyter Notebooks (если есть)
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Разное
+*.tmp
+*.bak
