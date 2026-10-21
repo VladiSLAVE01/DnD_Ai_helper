@@ -8,13 +8,25 @@ from sklearn.preprocessing import StandardScaler
 def load_and_prepare_data(csv_path):
 	print(f"Загружаем: {csv_path}")
 
-	# Загрузка
-	df = pd.read_csv(
-		csv_path,
-		delimiter=';',
-		encoding='utf-8-sig',
-		on_bad_lines='skip'
-	)
+	# Загрузка с жесткой проверкой колонок
+	try:
+		df = pd.read_csv(
+			csv_path,
+			delimiter=';',
+			encoding='utf-8-sig',
+			on_bad_lines='skip',  # Пропускаем строки с ошибками
+			dtype=str,  # Читаем всё как строки, чтобы не было ошибок с float
+			keep_default_na=False  # Пустые строки не превращаем в NaN
+		)
+	except Exception as e:
+		print(f"Ошибка чтения: {e}")
+		raise
+
+	# Убираем возможные пробелы в названиях колонок
+	df.columns = df.columns.str.strip()
+
+	print(f"Загружено героев: {len(df)}")
+	print(f"Колонок: {len(df.columns)}")
 
 	print(f" Загружено героев: {len(df)}")
 	print(f"Колонок: {len(df.columns)}")
@@ -74,11 +86,10 @@ def load_and_prepare_data(csv_path):
 
 		# Ищем колонку с таким значением
 		for val, prefix in [(race, 'Раса'), (class_name, 'Класс')]:
-			for col in cols:
-				if col == f"{prefix}_{val}":
-					cond[cols.index(col)] = 1.0
-					break
-		return cond
+			target_col = f"{prefix}_{val}"
+			if target_col in cols:
+				cond[cols.index(target_col)] = 1.0
+			return cond
 
 	metadata = {
 		'full_tensor': full_tensor,
@@ -88,7 +99,8 @@ def load_and_prepare_data(csv_path):
 		'scaler': scaler,
 		'categorical_encoder': df_encoded,
 		'create_one_hot_condition': create_one_hot_condition,
-		'num_heroes': len(df)
+		'num_heroes': len(df),
+		'df_original': df
 	}
 
 	print(f" Тензор: {full_tensor.shape}")
